@@ -236,41 +236,23 @@ YOU ARE SOLELY RESPONSIBLE FOR:
 BY USING THIS SCRIPT, YOU ACKNOWLEDGE FULL RESPONSIBILITY.
 ```
 
-## Contributing
-
-Contributions welcome:
-- Test on different HP models and report results
-- Add detection for additional HP bloatware
-- Improve hardware service identification
-- Enhance safety mechanisms
-
 ## Credits
 
 - **Author**: Bugra
 - **Concept & Design**: Bugra
 - **Development**: Claude 4.5 Sonnet AI
-- **Architecture Base**: SketchUpBlocker, AdobeBlocker scripts
 
 ## License
 
 MIT License - Use at your own risk
 
-## Support
-
-⚠️ **NO OFFICIAL SUPPORT PROVIDED**
-
-This is experimental software. Use GitHub Issues for bug reports,
-but author provides no guarantees of response or fixes.
-
-If unsure, **DO NOT USE THIS SCRIPT**. Consult with IT professional first.
 
 ---
 
 <div align="center">
 
-**Remember: Always create a System Restore Point before running!**
+**Always create a System Restore Point before running!**
 
-**When in doubt, don't proceed.**
 
 </div>
 
