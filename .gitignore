@@ -1,0 +1,39 @@
+# HP Debloater - Git Ignore File
+
+# Log files
+HPDebloater_Logs/
+*.log
+
+# Backup files
+HPDebloater_Backups/
+*.backup
+*.backup_*
+
+# Temporary files
+*.tmp
+*.temp
+~*
+
+# Windows thumbnail cache
+Thumbs.db
+ehthumbs.db
+
+# System files
+Desktop.ini
+$RECYCLE.BIN/
+
+# PowerShell module cache
+PSGetModuleInfo.xml
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test files
+test/
+tests/
+Test*.ps1
+
