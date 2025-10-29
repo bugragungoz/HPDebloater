@@ -320,16 +320,16 @@ function Show-Banner {
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor Cyan
     Write-Host "                                                                                " -ForegroundColor Cyan
-    Write-Host "    ##     ## ########     ########  ######## ########  ##        #######      " -ForegroundColor Cyan
-    Write-Host "    ##     ## ##     ##    ##     ## ##       ##     ## ##       ##     ##     " -ForegroundColor Cyan
-    Write-Host "    ##     ## ##     ##    ##     ## ##       ##     ## ##       ##     ##     " -ForegroundColor Cyan
-    Write-Host "    ######### ########     ##     ## ######   ########  ##       ##     ##     " -ForegroundColor Cyan
-    Write-Host "    ##     ## ##           ##     ## ##       ##     ## ##       ##     ##     " -ForegroundColor Cyan
-    Write-Host "    ##     ## ##           ##     ## ##       ##     ## ##       ##     ##     " -ForegroundColor Cyan
-    Write-Host "    ##     ## ##           ########  ######## ########  ########  #######      " -ForegroundColor Cyan
+    Write-Host "     ######  ########   #######  ##     ## ########                             " -ForegroundColor Cyan
+    Write-Host "    ##    ## ##     ## ##     ##  ##   ##       ##                              " -ForegroundColor Cyan
+    Write-Host "    ##       ##     ## ##     ##   ## ##       ##                               " -ForegroundColor Cyan
+    Write-Host "    ##       ########  ##     ##    ###       ##                                " -ForegroundColor Cyan
+    Write-Host "    ##       ##   ##   ##     ##   ## ##     ##                                 " -ForegroundColor Cyan
+    Write-Host "    ##    ## ##    ##  ##     ##  ##   ##   ##                                  " -ForegroundColor Cyan
+    Write-Host "     ######  ##     ##  #######  ##     ## ########                             " -ForegroundColor Cyan
     Write-Host "                                                                                " -ForegroundColor Cyan
     Write-Host "                    HP Debloater Utility v$($script:Config.ScriptVersion)                         " -ForegroundColor Cyan
-    Write-Host "                    Laptop Hardware-Aware Bloatware Removal                    " -ForegroundColor Cyan
+    Write-Host "                    Laptop Hardware-Aware Bloatware Removal                     " -ForegroundColor Cyan
     Write-Host "                                                                                " -ForegroundColor Cyan
     Write-Host "================================================================================" -ForegroundColor Cyan
     Write-Host ""
