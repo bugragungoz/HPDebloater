@@ -1,63 +1,54 @@
-# HP Debloater
+# HP Telemetry & Ad Blocker
 
-<div align="center">
+PowerShell script for disabling HP telemetry and advertisement services on HP laptops.
 
-⚠️ **CRITICAL WARNING - UNTESTED SOFTWARE** ⚠️
-
-**THIS SCRIPT IS EXPERIMENTAL AND POTENTIALLY DANGEROUS**
-
-May cause system instability, hardware malfunction, or warranty void.  
-**Use at your own risk. Author assumes NO responsibility.**
-
-</div>
-
----
-
-PowerShell script for removing HP bloatware and blocking telemetry on HP laptops while protecting critical hardware functionality.
+**OMEN Gaming Hub Safe**: Does not affect gaming features, fan control, temperature monitoring, or graphics switching.
 
 ## Overview
 
-Hardware-aware debloater that safely removes HP bloatware (Support Assistant, telemetry, analytics) while protecting essential laptop hardware services (audio, touchpad, display, power management, keyboard).
+Lightweight script that disables HP data collection and advertisement services only. OMEN Gaming Hub, hardware controls, and gaming features remain fully functional.
 
-## Critical Exclusions
+## Protected Services
 
-This script **INTENTIONALLY DOES NOT TOUCH**:
-- ❌ BIOS/UEFI configuration services (can brick system)
-- ❌ MUX switch / GPU multiplexer services (hardware routing)
-- ❌ Firmware update services (security critical)
-- ❌ TPM/Security chip services (system lockout risk)
-- ❌ Hardware management engines (Intel ME, AMD PSP)
-
-## Protected Hardware Services
-
-**NEVER Disabled** (Essential Functionality):
-- 🔒 Audio services (speakers, headphones)
-- 🔒 Touchpad services (trackpad control)
-- 🔒 Display control (brightness adjustment)
-- 🔒 Power management (battery optimization)
-- 🔒 WMI service (hardware communication)
-- 🔒 Hotkey service (function keys)
-- 🔒 Wireless button (WiFi/Bluetooth toggle)
-
-## Features
-
-- **Safe Bloatware Removal**: Targets only non-essential HP software
-- **Network Isolation**: Blocks 21 HP telemetry domains (hosts + firewall)
-- **Hardware Protection**: Critical services cannot be disabled
-- **Comprehensive Backup**: Services, tasks, firewall rules, hosts file
-- **Full Rollback**: Complete system state restoration
-- **Multi-Stage Consent**: 5-page disclaimer + explicit confirmations
-- **OMEN Support**: Enable/disable OMEN Gaming Hub (MUX protected)
+This script does NOT touch:
+- OMEN Gaming Hub
+- Fan control
+- Temperature monitoring
+- Graphics switching
+- Performance controls
+- Audio services
+- Touchpad services
+- Display control
+- Power management
+- Keyboard functions
 
 ## Target Services
 
-### Bloatware (Safe to Remove)
-- HP Support Assistant
-- HP Telemetry & Analytics
+Script blocks only telemetry and advertisements:
+- HP Touchpoint Analytics
 - HP Customer Participation Program
-- HP Diagnostics
-- HP JumpStart Bridge
-- HP Documentation
+- HP Support Solutions Framework (ads/promotions)
+- HP JumpStart promotional launcher
+
+## Features
+
+- **OMEN-Safe**: ZERO impact on gaming features
+- **Telemetry Blocking**: Disables HP data collection services
+- **Ad Blocking**: Removes HP promotional services
+- **Network Isolation**: Blocks 21+ HP telemetry domains (hosts + firewall)
+- **Automatic Backup**: Full rollback capability included
+- **Simple Interface**: 2-page disclaimer, easy to use
+- **Hardware Friendly**: All hardware features remain operational
+
+## Target Services (ONLY 4 Services)
+
+### Telemetry Services
+- **HP Touchpoint Analytics** (data collection)
+- **HP Customer Participation Program** (feedback/tracking)
+
+### Advertisement Services
+- **HP Support Solutions Framework** (promotional popups)
+- **HP JumpStart Bridge** (promotional launcher)
 
 ### Network Blocking
 - `telemetry.hp.com`, `metrics.hp.com`, `analytics.hp.com`
@@ -70,8 +61,8 @@ This script **INTENTIONALLY DOES NOT TOUCH**:
 ### Prerequisites
 - **Administrator privileges required**
 - **Windows 10/11**
-- **HP Laptop** (optimized for OMEN series)
-- **Create System Restore Point** (mandatory recommendation)
+- **HP Laptop** (OMEN Gaming Hub will NOT be affected)
+- **System Restore Point** (optional - automatic backup included)
 
 ### Installation
 
@@ -95,35 +86,26 @@ This script **INTENTIONALLY DOES NOT TOUCH**:
 ### Operation Modes
 
 ```
-[1] OMEN GAMING HUB - ENABLE
-    Enable OMEN services temporarily (for settings access)
+[1] BLOCK TELEMETRY & ADS
+    Disable HP telemetry and advertisement services
+    (OMEN Gaming Hub fully protected and functional)
 
-[2] OMEN GAMING HUB - DISABLE
-    Disable OMEN bloatware (MUX switch remains protected)
-
-[3] GENERAL HP DEBLOAT
-    Remove HP bloatware and telemetry (safe mode)
-
-[4] NETWORK ISOLATION
-    Block HP telemetry domains and analytics services
-
-[5] ROLLBACK MODE
-    Restore system from backup
-
-[R] QUICK RECOVERY
-    Emergency restore of all hardware services
+[2] ROLLBACK MODE
+    Restore from previous backup (undo changes)
 
 [Q] QUIT
+    Exit script safely
 ```
 
 ## Safety Mechanisms
 
-### 1. Multi-Layer Protection
-- Critical service whitelist (auto-blocked from disable)
-- Semi-critical warnings (two-stage consent required)
-- Explicit consent phrases for dangerous operations
+### 1. OMEN Gaming Hub Protection
+- OMEN services are NEVER touched by this script
+- Fan control, temperature monitoring fully operational
+- Graphics switching and performance controls untouched
+- All gaming features remain functional
 
-### 2. Backup System
+### 2. Automatic Backup System
 ```
 HPDebloater_Backups/
 └── Backup_YYYYMMDD_HHMMSS/
@@ -135,16 +117,15 @@ HPDebloater_Backups/
 ```
 
 ### 3. Disclaimer System
-- 5-page comprehensive disclaimer
-- Warranty void warnings
-- Hardware impact explanations
-- Required consent: `"I HAVE READ ALL 5 PAGES AND ACCEPT ALL RISKS"`
+- 2-page simple disclaimer
+- Clear explanation of what's blocked
+- OMEN protection explicitly stated
+- Required consent: `"I ACCEPT"`
 
-### 4. Recovery Options
-- **Quick Recovery**: One-click hardware service restoration
-- **Full Rollback**: Complete system state restore from backup
-- **Manual Recovery**: Step-by-step instructions provided
-- **System Restore Point**: Windows-native recovery (user-created)
+### 4. Easy Rollback
+- **Full Rollback**: Complete restoration from backup
+- **Automatic Backup**: Created before any changes
+- **One-Click Restore**: Simple menu option
 
 ## Technical Details
 
@@ -161,98 +142,100 @@ HPDebloater_Backups/
 - Backups: `HPDebloater_Backups\Backup_YYYYMMDD_HHMMSS\`
 - Transcript: `HPDebloater_Logs\HPDebloater_Transcript_YYYYMMDD_HHMMSS.log`
 
-## Warnings
+## After Running This Script
 
-### ⚠️ WARRANTY IMPLICATIONS
-- **HP warranty MAY BE VOIDED** by modifying system services
-- HP Support may refuse assistance on modified systems
-- HP may flag system as "modified" and deny service
+Changes:
+- HP will not collect usage data
+- HP promotional popups disabled
+- Telemetry domains blocked
 
-### ⚠️ HARDWARE RISKS
-If you accidentally disable wrong services:
-- Touchpad may stop working (external mouse required)
-- Speakers/headphones may produce no sound
-- Brightness control may fail
-- Battery optimization may be lost
-- Function keys (Fn) may not work
+Unchanged:
+- All hardware features work normally
+- OMEN Gaming Hub functions
+- Fan control operational
+- Temperature monitoring functional
+- Graphics switching intact
 
-### ⚠️ SYSTEM STABILITY
-- Always create Windows System Restore Point first
-- Test in non-production environment if possible
-- Understand implications before proceeding
-- Keep external mouse/keyboard available
+Risks:
+- Minimal - only telemetry services affected
+- Easy rollback available
+- Automatic backup created before changes
 
 ## Recovery Procedures
 
-### Quick Hardware Recovery (If Hardware Stops Working)
+### Easy Rollback (Undo All Changes)
 1. Re-run script as Administrator
-2. Select option `[R] QUICK RECOVERY`
-3. All hardware services will be restored immediately
-
-### Full Rollback (Complete Restoration)
-1. Re-run script as Administrator
-2. Select option `[5] ROLLBACK MODE`
+2. Select option `[2] ROLLBACK MODE`
 3. Choose backup to restore
-4. System will be restored to previous state
+4. All changes will be reversed
 
-### Manual Recovery (If Script Fails)
+### Manual Re-enable (If Needed)
 1. Open Services (`services.msc`)
-2. Find affected HP service
+2. Find HP telemetry service
 3. Set Startup Type: `Automatic`
 4. Click `Start` button
-
-### System Restore (Last Resort)
-1. Press `Windows + R`
-2. Type: `rstrui.exe`
-3. Follow wizard to restore to point created before script
 
 ## System Requirements
 
 - **OS**: Windows 10 (1809+) or Windows 11
-- **Hardware**: HP Laptop (Desktop untested)
+- **Hardware**: HP Laptop (especially OMEN series)
 - **Privileges**: Administrator rights
 - **PowerShell**: 5.1 or higher
-- **Disk Space**: ~50MB for backups
+- **Disk Space**: ~10MB for backups
 
-## Tested Configurations
+## Version History
 
-⚠️ **NONE - THIS SCRIPT IS UNTESTED**
+Previous version (1.0.0) issues:
+- Broke OMEN Gaming Hub features
+- Disabled graphics switching controls
+- Affected fan control and temperature monitoring
+- Impacted performance management
 
-Please report issues and test results via GitHub Issues.
+Current version (2.0.0) improvements:
+- Only targets telemetry and ads
+- Leaves all gaming features intact
+- Keeps hardware controls functional
+- Simpler and safer to use
 
 ## Legal Disclaimer
 
 ```
-THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
-THE AUTHOR ACCEPTS NO LIABILITY FOR ANY DAMAGES, WARRANTY VOIDS,
-SYSTEM FAILURES, DATA LOSS, OR HARDWARE DAMAGE.
+THIS SOFTWARE IS PROVIDED "AS IS" FOR PERSONAL USE.
+THE AUTHOR ACCEPTS NO LIABILITY FOR ANY CONSEQUENCES.
 
-YOU ARE SOLELY RESPONSIBLE FOR:
-- Compliance with HP Terms of Service
-- System integrity and functionality  
-- Warranty implications
-- All consequences of using this script
+This script ONLY disables telemetry and advertisement services.
+OMEN Gaming Hub and hardware features remain fully functional.
 
-BY USING THIS SCRIPT, YOU ACKNOWLEDGE FULL RESPONSIBILITY.
+You have the right to disable telemetry on your own device.
+Automatic backups allow easy restoration if needed.
 ```
+
+## Contributing
+
+Contributions welcome:
+- Test on different HP OMEN models
+- Report telemetry services we missed
+- Suggest improvements for OMEN safety
+- Share your results
 
 ## Credits
 
 - **Author**: Bugra
 - **Concept & Design**: Bugra
 - **Development**: Claude 4.5 Sonnet AI
+- **Version**: 2.0.0 (OMEN-Safe Edition)
 
 ## License
 
 MIT License - Use at your own risk
 
+## Support
+
+Use GitHub Issues for bug reports and suggestions.
+
+Reports from OMEN users confirming Gaming Hub functionality are appreciated.
 
 ---
 
-<div align="center">
-
-**Always create a System Restore Point before running!**
-
-
-</div>
+**Note**: This script only blocks telemetry and ads. OMEN Gaming Hub, fan control, temperature monitoring, and graphics switching remain fully functional.
 

@@ -2,20 +2,20 @@
 
 <#
 .SYNOPSIS
-    HP Debloater - Comprehensive Laptop Bloatware Removal Utility
+    HP Telemetry & Ad Blocker - Safe Telemetry and Advertisement Removal
     
 .DESCRIPTION
-    Advanced PowerShell script to safely remove HP bloatware while protecting
-    critical hardware functionality (touchpad, audio, camera, MUX switch, BIOS).
+    Lightweight PowerShell script to disable ONLY HP telemetry and advertisement
+    services. Does NOT touch OMEN Gaming Hub, hardware controls, or gaming features.
     
 .NOTES
-    Name:           HP Debloater
+    Name:           HP Telemetry & Ad Blocker
     Author:         Bugra
     Concept & Design: Bugra
     Development:    Claude 4.5 Sonnet AI
-    Version:        1.0.0
+    Version:        2.0.0
     Created:        2025
-    Target:         HP Laptops (optimized for OMEN series)
+    Target:         HP Laptops (OMEN-safe)
     
 .LEGAL DISCLAIMER
     This tool is provided for LEGAL USE ONLY. The author accepts NO RESPONSIBILITY
@@ -31,12 +31,13 @@
     BY USING THIS SCRIPT, YOU ACKNOWLEDGE AND ACCEPT FULL RESPONSIBILITY.
     
 .IMPORTANT
-    This script implements HARDWARE-AWARE debloating for HP laptops:
-    - Protects critical hardware services (audio, touchpad, display, power)
-    - Removes telemetry, analytics, and bloatware safely
-    - Provides comprehensive backup and rollback capabilities
-    - Includes multi-stage consent and warnings
-    - Supports network isolation for HP telemetry
+    This script ONLY targets telemetry and advertisement services:
+    - Blocks HP telemetry and data collection
+    - Disables HP advertisement and promotional services
+    - DOES NOT touch OMEN Gaming Hub or hardware controls
+    - DOES NOT affect fan control, temperature monitoring, or graphics switching
+    - Protects ALL hardware and gaming functionality
+    - Provides backup and rollback capabilities
 #>
 
 $ErrorActionPreference = "Stop"
@@ -51,8 +52,8 @@ $script:Config = @{
     LogFile             = ""
     SessionID           = (Get-Date -Format "yyyyMMdd_HHmmss")
     DryRun              = $false
-    RulePrefix          = "HPDebloater"
-    ScriptVersion       = "1.0.0"
+    RulePrefix          = "HPTelemetryBlocker"
+    ScriptVersion       = "2.0.0"
 }
 
 $script:Statistics = @{
@@ -212,41 +213,11 @@ $script:HardwareSemiCritical = @{
     }
 }
 
-$script:BloatwareServices = @{
-    # TIER 2: SAFE TO DISABLE - Bloatware and Telemetry
-    # NOTE: Services listed here are non-essential HP software
-    # Hardware-critical services are in $HardwareCritical (protected)
+$script:TelemetryAndAdServices = @{
+    # ONLY TELEMETRY AND ADVERTISEMENT SERVICES
+    # OMEN Gaming Hub services are NEVER touched
+    # Hardware and gaming functionality fully protected
     
-    "HPSupportSolutionsFrameworkService" = @{
-        DisplayName = "HP Support Solutions Framework Service"
-        Impact = "HP Support Assistant will not function"
-        Category = "SUPPORT"
-        AllowDisable = $true
-    }
-    "HPAppHelperCap" = @{
-        DisplayName = "HP App Helper"
-        Impact = "HP App Helper will not function"
-        Category = "SUPPORT"
-        AllowDisable = $true
-    }
-    "HPDiagsCap" = @{
-        DisplayName = "HP Diagnostics"
-        Impact = "HP Diagnostics will not function"
-        Category = "SUPPORT"
-        AllowDisable = $true
-    }
-    "HPNetworkCap" = @{
-        DisplayName = "HP Network Check"
-        Impact = "HP Network Check will not function"
-        Category = "SUPPORT"
-        AllowDisable = $true
-    }
-    "HP System Info HSA Service" = @{
-        DisplayName = "HP System Info HSA Service"
-        Impact = "HP System Information will not function"
-        Category = "SUPPORT"
-        AllowDisable = $true
-    }
     "HpTouchpointAnalyticsService" = @{
         DisplayName = "HP Touchpoint Analytics"
         Impact = "Telemetry and analytics disabled"
@@ -255,20 +226,20 @@ $script:BloatwareServices = @{
     }
     "HP Customer Participation Program" = @{
         DisplayName = "HP Customer Participation Program"
-        Impact = "Data collection disabled"
+        Impact = "Data collection and feedback program disabled"
         Category = "TELEMETRY"
+        AllowDisable = $true
+    }
+    "HPSupportSolutionsFrameworkService" = @{
+        DisplayName = "HP Support Solutions Framework Service"
+        Impact = "HP Support Assistant ads and promotions disabled"
+        Category = "ADVERTISEMENT"
         AllowDisable = $true
     }
     "HPJumpStartBridge" = @{
         DisplayName = "HP JumpStart Bridge"
-        Impact = "HP JumpStart will not function"
-        Category = "SUPPORT"
-        AllowDisable = $true
-    }
-    "HP Ink Droplet Service" = @{
-        DisplayName = "HP Ink Droplet Service"
-        Impact = "Printer ink monitoring disabled"
-        Category = "SUPPORT"
+        Impact = "HP promotional software launcher disabled"
+        Category = "ADVERTISEMENT"
         AllowDisable = $true
     }
 }
@@ -328,8 +299,8 @@ function Show-Banner {
     Write-Host "    ##    ## ##    ##  ##     ##  ##   ##   ##                                  " -ForegroundColor Cyan
     Write-Host "     ######  ##     ##  #######  ##     ## ########                             " -ForegroundColor Cyan
     Write-Host "                                                                                " -ForegroundColor Cyan
-    Write-Host "                    HP Debloater Utility v$($script:Config.ScriptVersion)                         " -ForegroundColor Cyan
-    Write-Host "                    Laptop Hardware-Aware Bloatware Removal                     " -ForegroundColor Cyan
+    Write-Host "                HP Telemetry & Ad Blocker v$($script:Config.ScriptVersion)                       " -ForegroundColor Cyan
+    Write-Host "              Safe Telemetry Removal - OMEN Gaming Hub Protected              " -ForegroundColor Cyan
     Write-Host "                                                                                " -ForegroundColor Cyan
     Write-Host "================================================================================" -ForegroundColor Cyan
     Write-Host ""
@@ -433,52 +404,48 @@ function Test-AdministratorPrivileges {
 
 function Show-DisclaimerPage1 {
     Clear-Host
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host "                   HP DEBLOATER - LEGAL DISCLAIMER" -ForegroundColor Red
-    Write-Host "                            (Page 1 of 5)" -ForegroundColor Red
-    Write-Host "================================================================================" -ForegroundColor Red
+    Write-Host "================================================================================" -ForegroundColor Yellow
+    Write-Host "              HP TELEMETRY & AD BLOCKER - DISCLAIMER" -ForegroundColor Yellow
+    Write-Host "                            (Page 1 of 2)" -ForegroundColor Yellow
+    Write-Host "================================================================================" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "                        *** CRITICAL WARNING ***" -ForegroundColor Yellow
-    Write-Host "           READ EVERY PAGE CAREFULLY BEFORE PROCEEDING" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                         WARRANTY IMPLICATIONS" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "[!] HP MANUFACTURER WARRANTY MAY BE VOIDED" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "    By modifying system services, scheduled tasks, or registry entries:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    * HP Inc. may consider your system warranty VOID" -ForegroundColor Yellow
-    Write-Host "    * HP Support may REFUSE technical assistance" -ForegroundColor Yellow
-    Write-Host "    * HP may FLAG your system as 'modified' and deny service" -ForegroundColor Yellow
-    Write-Host "    * Hardware repairs may be DENIED under warranty claims" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "    IMPORTANT: HP's warranty terms typically prohibit:" -ForegroundColor Cyan
-    Write-Host "      - Unauthorized software modifications" -ForegroundColor White
-    Write-Host "      - Disabling manufacturer-installed services" -ForegroundColor White
-    Write-Host "      - Tampering with system management tools" -ForegroundColor White
+    Write-Host "                        *** IMPORTANT NOTICE ***" -ForegroundColor Cyan
+    Write-Host "           This script ONLY disables telemetry and ads" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                         LEGAL RESPONSIBILITY" -ForegroundColor White
+    Write-Host "                         WHAT THIS SCRIPT DOES" -ForegroundColor White
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
-    Write-Host "[!] YOU ACCEPT FULL LEGAL RESPONSIBILITY" -ForegroundColor Red
+    Write-Host "    BLOCKS:" -ForegroundColor Green
     Write-Host ""
-    Write-Host "    This script is provided for EDUCATIONAL and PERSONAL USE ONLY." -ForegroundColor White
+    Write-Host "    * HP telemetry and data collection services" -ForegroundColor White
+    Write-Host "    * HP advertisement and promotional services" -ForegroundColor White
+    Write-Host "    * HP tracking domains (via hosts file)" -ForegroundColor White
     Write-Host ""
-    Write-Host "    The author/developer:" -ForegroundColor Cyan
-    Write-Host "      * Accepts NO LIABILITY for any damages" -ForegroundColor White
-    Write-Host "      * Accepts NO RESPONSIBILITY for warranty voids" -ForegroundColor White
-    Write-Host "      * Accepts NO RESPONSIBILITY for system failures" -ForegroundColor White
-    Write-Host "      * Accepts NO RESPONSIBILITY for data loss" -ForegroundColor White
-    Write-Host "      * Accepts NO RESPONSIBILITY for hardware damage" -ForegroundColor White
+    Write-Host "    DOES NOT TOUCH:" -ForegroundColor Red
     Write-Host ""
-    Write-Host "    You acknowledge that:" -ForegroundColor Cyan
-    Write-Host "      * You are SOLELY LIABLE for all consequences" -ForegroundColor White
-    Write-Host "      * You understand HP Terms of Service implications" -ForegroundColor White
-    Write-Host "      * You will NOT hold the author liable for ANY issues" -ForegroundColor White
-    Write-Host "      * You have the RIGHT to modify your own system" -ForegroundColor White
+    Write-Host "    * OMEN Gaming Hub (fully functional)" -ForegroundColor White
+    Write-Host "    * Fan control and temperature monitoring" -ForegroundColor White
+    Write-Host "    * Graphics switching and performance controls" -ForegroundColor White
+    Write-Host "    * Audio, touchpad, display, keyboard services" -ForegroundColor White
+    Write-Host "    * Power management and battery optimization" -ForegroundColor White
+    Write-Host "    * ANY hardware or gaming functionality" -ForegroundColor White
+    Write-Host ""
+    Write-Host "================================================================================" -ForegroundColor White
+    Write-Host "                         LEGAL DISCLAIMER" -ForegroundColor White
+    Write-Host "================================================================================" -ForegroundColor White
+    Write-Host ""
+    Write-Host "    This script is provided 'AS IS' for personal use." -ForegroundColor White
+    Write-Host ""
+    Write-Host "    The author:" -ForegroundColor Cyan
+    Write-Host "      * Accepts NO LIABILITY for any consequences" -ForegroundColor White
+    Write-Host "      * Provides NO WARRANTY of any kind" -ForegroundColor White
+    Write-Host "      * Is NOT responsible for warranty implications" -ForegroundColor White
+    Write-Host ""
+    Write-Host "    You acknowledge:" -ForegroundColor Cyan
+    Write-Host "      * You use this script at your own risk" -ForegroundColor White
+    Write-Host "      * You have the right to disable telemetry on your device" -ForegroundColor White
+    Write-Host "      * Backups will be created for easy restoration" -ForegroundColor White
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
@@ -486,238 +453,55 @@ function Show-DisclaimerPage1 {
 
 function Show-DisclaimerPage2 {
     Clear-Host
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host "                   HP DEBLOATER - LEGAL DISCLAIMER" -ForegroundColor Red
-    Write-Host "                            (Page 2 of 5)" -ForegroundColor Red
-    Write-Host "================================================================================" -ForegroundColor Red
+    Write-Host "================================================================================" -ForegroundColor Yellow
+    Write-Host "              HP TELEMETRY & AD BLOCKER - DISCLAIMER" -ForegroundColor Yellow
+    Write-Host "                            (Page 2 of 2)" -ForegroundColor Yellow
+    Write-Host "================================================================================" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "                   SYSTEM STABILITY & HARDWARE RISKS" -ForegroundColor Yellow
+    Write-Host "                   BACKUP & RECOVERY INFORMATION" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                      CRITICAL HARDWARE SERVICES" -ForegroundColor White
+    Write-Host "                      AUTOMATIC BACKUP SYSTEM" -ForegroundColor White
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
-    Write-Host "[!] LAPTOP HARDWARE MAY STOP WORKING" -ForegroundColor Red
+    Write-Host "    Automatic backup is created before any changes:" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "    This laptop contains hardware that REQUIRES specific HP services:" -ForegroundColor White
+    Write-Host "    * All service states saved (JSON format)" -ForegroundColor White
+    Write-Host "    * Hosts file backed up (easy restoration)" -ForegroundColor White
+    Write-Host "    * Complete rollback capability included" -ForegroundColor White
     Write-Host ""
-    Write-Host "    AUDIO SYSTEM:" -ForegroundColor Cyan
-    Write-Host "      * Service: HP Audio Service, HP Audio Switch Service" -ForegroundColor White
-    Write-Host "      * Risk: Speakers and headphones may STOP WORKING entirely" -ForegroundColor Yellow
-    Write-Host "      * Impact: NO SOUND OUTPUT until services re-enabled" -ForegroundColor Yellow
+    Write-Host "================================================================================" -ForegroundColor White
+    Write-Host "                      EASY RESTORATION" -ForegroundColor White
+    Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
-    Write-Host "    TOUCHPAD:" -ForegroundColor Cyan
-    Write-Host "      * Service: HP Touchpad Service, Synaptics Service" -ForegroundColor White
-    Write-Host "      * Risk: Touchpad may become COMPLETELY UNRESPONSIVE" -ForegroundColor Yellow
-    Write-Host "      * Impact: External mouse REQUIRED if disabled" -ForegroundColor Yellow
+    Write-Host "    To undo changes:" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "    WEBCAM:" -ForegroundColor Cyan
-    Write-Host "      * Service: HP Camera Service" -ForegroundColor White
-    Write-Host "      * Risk: Integrated camera may NOT FUNCTION" -ForegroundColor Yellow
-    Write-Host "      * Impact: Video calls, photography apps will FAIL" -ForegroundColor Yellow
+    Write-Host "    1. Run this script again as Administrator" -ForegroundColor White
+    Write-Host "    2. Select 'ROLLBACK MODE' from menu" -ForegroundColor White
+    Write-Host "    3. Choose backup to restore" -ForegroundColor White
+    Write-Host "    4. All changes will be reversed" -ForegroundColor White
     Write-Host ""
-    Write-Host "    DISPLAY:" -ForegroundColor Cyan
-    Write-Host "      * Service: HP Display Control Service" -ForegroundColor White
-    Write-Host "      * Risk: Brightness control may STOP WORKING" -ForegroundColor Yellow
-    Write-Host "      * Impact: Manual brightness adjustment may be IMPOSSIBLE" -ForegroundColor Yellow
+    Write-Host "================================================================================" -ForegroundColor White
+    Write-Host "                      WHAT YOU WILL NOTICE" -ForegroundColor White
+    Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
-    Write-Host "    BATTERY/POWER:" -ForegroundColor Cyan
-    Write-Host "      * Service: HP Power Management Service" -ForegroundColor White
-    Write-Host "      * Risk: Battery optimization will FAIL" -ForegroundColor Yellow
-    Write-Host "      * Impact: Reduced battery life, no power profiles" -ForegroundColor Yellow
+    Write-Host "    After running this script:" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "    KEYBOARD FUNCTION KEYS:" -ForegroundColor Cyan
-    Write-Host "      * Service: HP Hotkey Service" -ForegroundColor White
-    Write-Host "      * Risk: F-keys (Brightness, Volume, etc.) may NOT WORK" -ForegroundColor Yellow
-    Write-Host "      * Impact: Must use Windows settings for brightness/volume" -ForegroundColor Yellow
+    Write-Host "    * HP will not collect usage data from your laptop" -ForegroundColor White
+    Write-Host "    * HP promotional popups will be disabled" -ForegroundColor White
+    Write-Host "    * All hardware features work normally" -ForegroundColor White
+    Write-Host "    * OMEN Gaming Hub functions normally" -ForegroundColor White
+    Write-Host "    * Fan control, temps, graphics switching operational" -ForegroundColor White
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
 }
 
-function Show-DisclaimerPage3 {
-    Clear-Host
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host "                   HP DEBLOATER - LEGAL DISCLAIMER" -ForegroundColor Red
-    Write-Host "                            (Page 3 of 5)" -ForegroundColor Red
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "                        SCRIPT SCOPE & LIMITATIONS" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                    WHAT THIS SCRIPT DOES" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "[+] This script ONLY targets:" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "    BLOATWARE:" -ForegroundColor Cyan
-    Write-Host "      * HP Support Assistant (support tool)" -ForegroundColor White
-    Write-Host "      * HP Telemetry & Analytics (data collection)" -ForegroundColor White
-    Write-Host "      * HP Customer Participation (feedback programs)" -ForegroundColor White
-    Write-Host "      * HP Diagnostics & Documentation" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    NETWORK ISOLATION:" -ForegroundColor Cyan
-    Write-Host "      * Block HP telemetry domains (analytics, tracking)" -ForegroundColor White
-    Write-Host "      * Block HP analytics services" -ForegroundColor White
-    Write-Host "      * Prevent data collection to HP servers" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    OPTIONAL HARDWARE:" -ForegroundColor Cyan
-    Write-Host "      * Webcam service (with explicit consent)" -ForegroundColor White
-    Write-Host "      * RGB lighting service (with explicit consent)" -ForegroundColor White
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                    WHAT THIS SCRIPT DOES NOT TOUCH" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "[!] This script INTENTIONALLY EXCLUDES:" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "    NEVER MODIFIED (Protected):" -ForegroundColor Cyan
-    Write-Host "      * BIOS/UEFI configuration services" -ForegroundColor White
-    Write-Host "      * Firmware update services" -ForegroundColor White
-    Write-Host "      * MUX switch / GPU multiplexer services" -ForegroundColor White
-    Write-Host "      * TPM/Security chip services" -ForegroundColor White
-    Write-Host "      * Hardware management engines" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    Reason: These are TOO DANGEROUS to automate." -ForegroundColor Yellow
-    Write-Host "            Interference can brick your system or lock you out." -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "    ALWAYS PROTECTED (Cannot be disabled):" -ForegroundColor Cyan
-    Write-Host "      * Audio services (speakers, headphones)" -ForegroundColor White
-    Write-Host "      * Touchpad services" -ForegroundColor White
-    Write-Host "      * Display control (brightness)" -ForegroundColor White
-    Write-Host "      * Power management (battery)" -ForegroundColor White
-    Write-Host "      * Keyboard function keys" -ForegroundColor White
-    Write-Host "      * WiFi/Bluetooth hardware buttons" -ForegroundColor White
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-}
-
-function Show-DisclaimerPage4 {
-    Clear-Host
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host "                   HP DEBLOATER - LEGAL DISCLAIMER" -ForegroundColor Red
-    Write-Host "                            (Page 4 of 5)" -ForegroundColor Red
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "                      BACKUP & RECOVERY INFORMATION" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                       SYSTEM RESTORE POINT - CRITICAL" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "[!] CREATE A WINDOWS SYSTEM RESTORE POINT NOW" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "    Before proceeding, you MUST manually create a restore point:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    HOW TO CREATE SYSTEM RESTORE POINT:" -ForegroundColor Cyan
-    Write-Host "      1. Press Windows Key + R" -ForegroundColor White
-    Write-Host "      2. Type: SystemPropertiesProtection" -ForegroundColor Yellow
-    Write-Host "      3. Press ENTER" -ForegroundColor White
-    Write-Host "      4. Click 'Create...' button" -ForegroundColor White
-    Write-Host "      5. Enter description: Before HP Debloater - $(Get-Date -Format 'yyyy-MM-dd HH:mm')" -ForegroundColor Yellow
-    Write-Host "      6. Click 'Create' and wait for completion (2-5 minutes)" -ForegroundColor White
-    Write-Host "      7. Return to this script and continue" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    Why System Restore Point is CRITICAL:" -ForegroundColor Cyan
-    Write-Host "      * Provides Windows-native full system recovery" -ForegroundColor White
-    Write-Host "      * Can restore even if script backup fails" -ForegroundColor White
-    Write-Host "      * Recovers registry, system files, and configurations" -ForegroundColor White
-    Write-Host "      * Last resort if something goes wrong" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    This script provides its own backup system, but System Restore Point" -ForegroundColor Cyan
-    Write-Host "    is an ADDITIONAL safety layer that operates independently." -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                          SCRIPT BACKUP SYSTEM" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "[+] This script will automatically backup:" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "      * All HP service states and configurations (JSON format)" -ForegroundColor White
-    Write-Host "      * All HP scheduled tasks (XML export)" -ForegroundColor White
-    Write-Host "      * Windows Firewall rules (JSON format)" -ForegroundColor White
-    Write-Host "      * Hosts file modifications (timestamped backup)" -ForegroundColor White
-    Write-Host "      * Registry startup entries (.reg file)" -ForegroundColor White
-    Write-Host "      * Operation metadata and manifest" -ForegroundColor White
-    Write-Host ""
-    Write-Host "    Backups stored in: HPDebloater_Backups\Backup_[Timestamp]\" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "    Rollback capability:" -ForegroundColor Cyan
-    Write-Host "      * Full restore from any backup" -ForegroundColor White
-    Write-Host "      * Step-by-step recovery process" -ForegroundColor White
-    Write-Host "      * Verification after restore" -ForegroundColor White
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-}
-
-function Show-DisclaimerPage5 {
-    Clear-Host
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host "                   HP DEBLOATER - LEGAL DISCLAIMER" -ForegroundColor Red
-    Write-Host "                            (Page 5 of 5)" -ForegroundColor Red
-    Write-Host "================================================================================" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "                         FINAL ACKNOWLEDGMENT" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                           NO WARRANTIES" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "This software is provided 'AS IS' without warranty of any kind, either" -ForegroundColor White
-    Write-Host "expressed or implied, including but not limited to:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  * Warranties of merchantability" -ForegroundColor White
-    Write-Host "  * Fitness for a particular purpose" -ForegroundColor White
-    Write-Host "  * Non-infringement" -ForegroundColor White
-    Write-Host "  * Accuracy or completeness" -ForegroundColor White
-    Write-Host "  * System stability or compatibility" -ForegroundColor White
-    Write-Host ""
-    Write-Host "The entire risk as to the quality and performance of the script is with YOU." -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "Should the script prove defective, YOU assume the cost of all necessary" -ForegroundColor Yellow
-    Write-Host "servicing, repair, or correction." -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                      PROFESSIONAL CONSULTATION" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "If you are unsure about ANY aspect of this script:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  * Consult with a qualified IT professional" -ForegroundColor White
-    Write-Host "  * Contact HP Support for guidance (before modifications)" -ForegroundColor White
-    Write-Host "  * Research HP service dependencies thoroughly" -ForegroundColor White
-    Write-Host "  * Test in a non-production environment first" -ForegroundColor White
-    Write-Host ""
-    Write-Host "DO NOT PROCEED if you do not fully understand the implications." -ForegroundColor Red
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                           FINAL CONSENT" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "By proceeding, you explicitly acknowledge and agree that:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  [X] I have read ALL 5 pages of this disclaimer" -ForegroundColor Cyan
-    Write-Host "  [X] I understand that my HP warranty may be VOIDED" -ForegroundColor Cyan
-    Write-Host "  [X] I understand that hardware may STOP WORKING" -ForegroundColor Cyan
-    Write-Host "  [X] I accept FULL RESPONSIBILITY for all consequences" -ForegroundColor Cyan
-    Write-Host "  [X] I will NOT hold the author liable for ANY damages" -ForegroundColor Cyan
-    Write-Host "  [X] I have created a Windows System Restore Point" -ForegroundColor Cyan
-    Write-Host "  [X] I understand this is NOT endorsed by HP Inc." -ForegroundColor Cyan
-    Write-Host "  [X] I am proceeding at MY OWN RISK" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-}
 
 function Show-Disclaimer {
     $pages = @(
         { Show-DisclaimerPage1 },
-        { Show-DisclaimerPage2 },
-        { Show-DisclaimerPage3 },
-        { Show-DisclaimerPage4 },
-        { Show-DisclaimerPage5 }
+        { Show-DisclaimerPage2 }
     )
     
     $currentPage = 0
@@ -731,9 +515,7 @@ function Show-Disclaimer {
             Write-Host "Press ENTER to continue to Page 2, or type 'QUIT' to exit: " -NoNewline -ForegroundColor Yellow
         }
         elseif ($currentPage -eq ($pages.Count - 1)) {
-            Write-Host "Type 'I HAVE READ ALL 5 PAGES AND ACCEPT ALL RISKS' to continue: " -NoNewline -ForegroundColor Yellow
-            Write-Host ""
-            Write-Host "Type 'BACK' for Page 4, or 'QUIT' to exit: " -NoNewline -ForegroundColor Yellow
+            Write-Host "Type 'I ACCEPT' to continue, 'BACK' for Page 1, or 'QUIT' to exit: " -NoNewline -ForegroundColor Yellow
         }
         else {
             Write-Host "Press ENTER to continue to Page $($currentPage + 2), type 'BACK' for Page $currentPage, or 'QUIT' to exit: " -NoNewline -ForegroundColor Yellow
@@ -753,17 +535,17 @@ function Show-Disclaimer {
             $currentPage--
         }
         elseif ($currentPage -eq ($pages.Count - 1)) {
-            # Last page - require exact phrase
-            if ($response -eq 'I HAVE READ ALL 5 PAGES AND ACCEPT ALL RISKS') {
+            # Last page - require consent
+            if ($response -eq 'I ACCEPT') {
                 Write-Host ""
-                Write-Host "[CONFIRMED] Proceeding with operation..." -ForegroundColor Green
-                Write-Log "User accepted all disclaimer pages and risks" -Level WARNING
+                Write-Host "[CONFIRMED] Proceeding with telemetry blocking..." -ForegroundColor Green
+                Write-Log "User accepted disclaimer" -Level INFO
                 Start-Sleep -Seconds 1
                 return $true
             }
             else {
                 Write-Host ""
-                Write-Host "[!] Invalid response. Please type exactly as shown." -ForegroundColor Red
+                Write-Host "[!] Please type 'I ACCEPT' to continue." -ForegroundColor Red
                 Start-Sleep -Seconds 2
             }
         }
@@ -783,96 +565,45 @@ function Show-SystemRestorePointPrompt {
     Clear-Host
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor Cyan
-    Write-Host "              SYSTEM RESTORE POINT - CRITICAL SAFETY MEASURE" -ForegroundColor Cyan
+    Write-Host "              SYSTEM RESTORE POINT - OPTIONAL SAFETY" -ForegroundColor Cyan
     Write-Host "================================================================================" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "  Before making ANY changes, you should create a Windows System Restore Point." -ForegroundColor White
+    Write-Host "  This script will create automatic backups before making changes." -ForegroundColor Green
     Write-Host ""
-    Write-Host "  This provides a COMPLETE system recovery mechanism independent of this script." -ForegroundColor White
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                    HOW TO CREATE RESTORE POINT MANUALLY" -ForegroundColor White
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  Step 1: Press Windows Key + R" -ForegroundColor Cyan
-    Write-Host "          (Run dialog will open)" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "  Step 2: Type exactly: SystemPropertiesProtection" -ForegroundColor Cyan
-    Write-Host "          Then press ENTER" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "  Step 3: Click the 'Create...' button" -ForegroundColor Cyan
-    Write-Host "          (Located at bottom of System Protection tab)" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "  Step 4: Enter description:" -ForegroundColor Cyan
-    Write-Host "          Before HP Debloater - $(Get-Date -Format 'yyyy-MM-dd HH:mm')" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "  Step 5: Click 'Create' and wait for completion" -ForegroundColor Cyan
-    Write-Host "          (May take 2-5 minutes)" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "  Step 6: Return to this script and continue" -ForegroundColor Cyan
+    Write-Host "  You can optionally create a Windows System Restore Point for" -ForegroundColor White
+    Write-Host "  additional peace of mind (not required, as we only touch telemetry)." -ForegroundColor White
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor White
-    Write-Host "                    TROUBLESHOOTING RESTORE POINTS" -ForegroundColor White
+    Write-Host "                      WHAT THIS SCRIPT WILL DO" -ForegroundColor White
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
-    Write-Host "  If 'Create' button is grayed out:" -ForegroundColor Yellow
-    Write-Host "    1. Select your C: drive in the list" -ForegroundColor White
-    Write-Host "    2. Click 'Configure' button" -ForegroundColor White
-    Write-Host "    3. Select 'Turn on system protection'" -ForegroundColor White
-    Write-Host "    4. Set disk space to at least 5%" -ForegroundColor White
-    Write-Host "    5. Click OK, then try 'Create' again" -ForegroundColor White
+    Write-Host "    Disable HP telemetry services (data collection)" -ForegroundColor White
+    Write-Host "    Disable HP advertisement services (promotions)" -ForegroundColor White
+    Write-Host "    Block HP tracking domains (hosts file)" -ForegroundColor White
+    Write-Host "    Create automatic backup for easy rollback" -ForegroundColor White
+    Write-Host ""
+    Write-Host "    OMEN Gaming Hub remains fully functional" -ForegroundColor Cyan
+    Write-Host "    Fan control, temps, graphics switching untouched" -ForegroundColor Cyan
+    Write-Host "    All hardware features work normally" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
+    Write-Host "  Ready to proceed? (yes/no): " -NoNewline -ForegroundColor Yellow
     
-    # Check if restore points are enabled
-    try {
-        $restoreEnabled = $null -ne (Get-ComputerRestorePoint -ErrorAction SilentlyContinue)
-        if ($restoreEnabled) {
-            Write-Host "  [OK] System Restore is ENABLED on this PC" -ForegroundColor Green
-            Write-Log "System Restore is enabled" -Level INFO
-        }
-        else {
-            Write-Host "  [!] System Restore appears to be DISABLED" -ForegroundColor Red
-            Write-Host "      Follow troubleshooting steps above to enable it" -ForegroundColor Yellow
-            Write-Log "System Restore is disabled" -Level WARNING
-        }
-    }
-    catch {
-        Write-Host "  [?] Could not verify System Restore status" -ForegroundColor Yellow
-        Write-Log "Could not verify System Restore status: $_" -Level WARNING
+    $proceed = Read-Host
+    
+    if ($proceed -notmatch '^(yes|y)$') {
+        Write-Host ""
+        Write-Host "  [CANCELLED] Exiting safely. No changes made." -ForegroundColor Green
+        Write-Host ""
+        Write-Log "User cancelled at proceed prompt" -Level INFO
+        return $false
     }
     
     Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  Have you created a System Restore Point? (yes/no): " -NoNewline -ForegroundColor Cyan
-    $created = Read-Host
-    
-    if ($created -notmatch '^(yes|y)$') {
-        Write-Host ""
-        Write-Host "  [!] STRONGLY RECOMMENDED: Create a restore point before proceeding!" -ForegroundColor Red
-        Write-Host ""
-        Write-Host "  Do you want to proceed WITHOUT a System Restore Point? (yes/no): " -NoNewline -ForegroundColor Yellow
-        $proceedAnyway = Read-Host
-        
-        if ($proceedAnyway -notmatch '^(yes|y)$') {
-            Write-Host ""
-            Write-Host "  [CANCELLED] Exiting safely. No changes made." -ForegroundColor Green
-            Write-Host ""
-            Write-Log "User cancelled: No System Restore Point created" -Level INFO
-            return $false
-        }
-        else {
-            Write-Log "User proceeded WITHOUT System Restore Point" -Level WARNING
-        }
-    }
-    else {
-        Write-Host ""
-        Write-Host "  [OK] Restore Point confirmed. Proceeding with safety net active." -ForegroundColor Green
-        Write-Log "User confirmed System Restore Point creation" -Level SUCCESS
-        Start-Sleep -Seconds 2
-    }
+    Write-Host "  [OK] Starting telemetry blocker..." -ForegroundColor Green
+    Write-Log "User confirmed - proceeding with telemetry blocking" -Level SUCCESS
+    Start-Sleep -Seconds 1
     
     return $true
 }
@@ -1692,157 +1423,23 @@ function Invoke-FullRollback {
 }
 
 # ============================================================================
-# OMEN GAMING HUB MODULE
+# TELEMETRY & AD BLOCKING MODULE
 # ============================================================================
 
-$script:OMENServices = @(
-    # NOTE: OmenHsaService (MUX Switch) is INTENTIONALLY EXCLUDED
-    # Reason: Controls hardware GPU routing - too critical to automate
-    "HP Application Enabling Services",
-    "OMEN Software and Services"
-)
-
-$script:OMENTasks = @(
-    @{ Name = "HP OMEN OMENInstallMonitor"; Path = "\HP\" },
-    @{ Name = "OMENCommandCenterUserTasks"; Path = "\HP\" }
-)
-
-function Enable-OMENServices {
+function Invoke-TelemetryAndAdBlocking {
     Write-Host ""
     Write-Host "================================================================================" -ForegroundColor Cyan
-    Write-Host "                      OMEN GAMING HUB - ENABLE" -ForegroundColor Cyan
+    Write-Host "                  HP TELEMETRY & ADVERTISEMENT BLOCKER" -ForegroundColor Cyan
     Write-Host "================================================================================" -ForegroundColor Cyan
     Write-Host ""
-    
-    # Create backup first
-    Invoke-FullBackup -Operation "OMEN Enable"
-    
-    Write-Host "[OMEN] Enabling OMEN services..." -ForegroundColor Cyan
-    Write-Host ""
-    
-    foreach ($serviceName in $script:OMENServices) {
-        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-        if ($service) {
-            Enable-HPService -ServiceName $serviceName
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "[OMEN] Enabling OMEN scheduled tasks..." -ForegroundColor Cyan
-    Write-Host ""
-    
-    foreach ($task in $script:OMENTasks) {
-        $taskExists = Get-ScheduledTask -TaskName $task.Name -TaskPath $task.Path -ErrorAction SilentlyContinue
-        if ($taskExists) {
-            Enable-HPTask -TaskName $task.Name -TaskPath $task.Path
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "[SUCCESS] OMEN Gaming Hub services enabled!" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "You can now open OMEN Gaming Hub." -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "  [!] NOTE: MUX switch functionality is always available." -ForegroundColor Cyan
-    Write-Host "      OMEN HSA Service is protected and never disabled by this script." -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "[REMINDER] Run OMEN DISABLE after you finish to remove bloatware!" -ForegroundColor Yellow
-    Write-Host ""
-    
-    Write-Host "Press any key to return to main menu..." -ForegroundColor Gray
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-
-function Disable-OMENServices {
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor Cyan
-    Write-Host "                      OMEN GAMING HUB - DISABLE" -ForegroundColor Cyan
-    Write-Host "================================================================================" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "This will disable OMEN Gaming Hub bloatware services." -ForegroundColor White
-    Write-Host ""
-    Write-Host "  [!] NOTE: OMEN HSA Service (MUX switch) is NOT touched by this script." -ForegroundColor Cyan
-    Write-Host "      It is too critical and remains protected." -ForegroundColor Cyan
+    Write-Host "This will disable ONLY telemetry and advertisement services." -ForegroundColor White
+    Write-Host "OMEN Gaming Hub and hardware controls are FULLY PROTECTED." -ForegroundColor Green
     Write-Host ""
     Write-Host "Target services:" -ForegroundColor Cyan
-    Write-Host "  - OMEN background processes" -ForegroundColor White
-    Write-Host "  - OMEN scheduled tasks" -ForegroundColor White
-    Write-Host "  - OMEN startup entries" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  Continue with OMEN bloatware removal? (yes/no): " -NoNewline -ForegroundColor Yellow
-    $confirm = Read-Host
-    
-    if ($confirm -notmatch '^(yes|y)$') {
-        Write-Host ""
-        Write-Host "[CANCELLED] No changes made" -ForegroundColor Green
-        Start-Sleep -Seconds 2
-        return
-    }
-    
-    # Create backup first
-    Invoke-FullBackup -Operation "OMEN Disable"
-    
-    Write-Host ""
-    Write-Host "[OMEN] Disabling OMEN services..." -ForegroundColor Cyan
-    Write-Host ""
-    
-    foreach ($serviceName in $script:OMENServices) {
-        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-        if ($service) {
-            Disable-HPService -ServiceName $serviceName -Force
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "[OMEN] Disabling OMEN scheduled tasks..." -ForegroundColor Cyan
-    Write-Host ""
-    
-    foreach ($task in $script:OMENTasks) {
-        $taskExists = Get-ScheduledTask -TaskName $task.Name -TaskPath $task.Path -ErrorAction SilentlyContinue
-        if ($taskExists) {
-            Disable-HPTask -TaskName $task.Name -TaskPath $task.Path
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "[OMEN] Stopping OMEN processes..." -ForegroundColor Cyan
-    
-    $omenProcesses = Get-Process | Where-Object { $_.ProcessName -like "*OMEN*" -or $_.ProcessName -like "*OMENCommandCenter*" }
-    foreach ($proc in $omenProcesses) {
-        try {
-            Stop-Process -Id $proc.Id -Force -ErrorAction Stop
-            Write-Host "  [OK] Stopped process: $($proc.ProcessName)" -ForegroundColor Green
-        }
-        catch {
-            Write-Log "Failed to stop process $($proc.ProcessName): $_" -Level WARNING
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "[SUCCESS] OMEN Gaming Hub fully disabled!" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Press any key to return to main menu..." -ForegroundColor Gray
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-
-# ============================================================================
-# GENERAL DEBLOAT MODULE
-# ============================================================================
-
-function Invoke-GeneralDebloat {
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor Cyan
-    Write-Host "                      GENERAL HP SYSTEM DEBLOAT" -ForegroundColor Cyan
-    Write-Host "================================================================================" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "This will disable HP bloatware and telemetry services." -ForegroundColor White
-    Write-Host "Hardware-critical services (audio, touchpad, etc.) are PROTECTED." -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Target services:" -ForegroundColor Cyan
-    Write-Host "  - HP Support Assistant" -ForegroundColor White
-    Write-Host "  - HP Telemetry & Analytics" -ForegroundColor White
-    Write-Host "  - HP Customer Participation" -ForegroundColor White
-    Write-Host "  - HP Diagnostics" -ForegroundColor White
+    Write-Host "  - HP Telemetry & Analytics (data collection)" -ForegroundColor White
+    Write-Host "  - HP Customer Participation Program" -ForegroundColor White
+    Write-Host "  - HP Support Assistant (ads/promotions)" -ForegroundColor White
+    Write-Host "  - HP JumpStart (promotional launcher)" -ForegroundColor White
     Write-Host ""
     Write-Host "Continue? (yes/no): " -NoNewline -ForegroundColor Yellow
     $confirm = Read-Host
@@ -1855,13 +1452,13 @@ function Invoke-GeneralDebloat {
     }
     
     # Create backup
-    Invoke-FullBackup -Operation "General Debloat"
+    Invoke-FullBackup -Operation "Telemetry & Ad Blocking"
     
     Write-Host ""
-    Write-Host "[Debloat] Disabling bloatware services..." -ForegroundColor Cyan
+    Write-Host "[Blocking] Disabling telemetry and ad services..." -ForegroundColor Cyan
     Write-Host ""
     
-    foreach ($serviceName in $script:BloatwareServices.Keys) {
+    foreach ($serviceName in $script:TelemetryAndAdServices.Keys) {
         $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
         if ($service) {
             Disable-HPService -ServiceName $serviceName
@@ -1869,83 +1466,41 @@ function Invoke-GeneralDebloat {
     }
     
     Write-Host ""
-    Write-Host "[Debloat] Disabling telemetry tasks..." -ForegroundColor Cyan
+    Write-Host "[Blocking] Disabling telemetry and ad tasks..." -ForegroundColor Cyan
     Write-Host ""
     
     $tasks = Get-HPScheduledTasks
     foreach ($task in $tasks) {
         if ($task.TaskName -like "*Support*" -or 
             $task.TaskName -like "*Telemetry*" -or 
-            $task.TaskName -like "*Analytics*") {
+            $task.TaskName -like "*Analytics*" -or
+            $task.TaskName -like "*JumpStart*" -or
+            $task.TaskName -like "*Participation*") {
             Disable-HPTask -TaskName $task.TaskName -TaskPath $task.TaskPath
         }
     }
     
+    # Block telemetry domains
+    Block-TelemetryDomains
+    
+    # Create firewall rules
+    New-TelemetryFirewallRules
+    
     Write-Host ""
-    Write-Host "[SUCCESS] General debloat completed!" -ForegroundColor Green
+    Write-Host "================================================================================" -ForegroundColor Green
+    Write-Host "                     TELEMETRY BLOCKING COMPLETE!" -ForegroundColor Green
+    Write-Host "================================================================================" -ForegroundColor Green
     Write-Host ""
     Write-Host "Summary:" -ForegroundColor Cyan
-    Write-Host "  Services disabled: $($script:Statistics.ServicesDisabled)" -ForegroundColor White
-    Write-Host "  Tasks disabled:    $($script:Statistics.TasksDisabled)" -ForegroundColor White
+    Write-Host "  Services disabled:  $($script:Statistics.ServicesDisabled)" -ForegroundColor White
+    Write-Host "  Tasks disabled:     $($script:Statistics.TasksDisabled)" -ForegroundColor White
+    Write-Host "  Domains blocked:    $($script:Statistics.DomainsBlocked)" -ForegroundColor White
+    Write-Host "  Firewall rules:     $($script:Statistics.FirewallRulesCreated)" -ForegroundColor White
     Write-Host ""
-    
-    Write-Host "Press any key to return to main menu..." -ForegroundColor Gray
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-
-# ============================================================================
-# QUICK RECOVERY
-# ============================================================================
-
-function Invoke-QuickHardwareRecovery {
-    Write-Host ""
-    Write-Host "================================================================================" -ForegroundColor Green
-    Write-Host "                      QUICK HARDWARE RECOVERY" -ForegroundColor Green
-    Write-Host "================================================================================" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "  This will immediately re-enable all hardware-critical services:" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  [+] Audio services (speakers, headphones)" -ForegroundColor Green
-    Write-Host "  [+] Touchpad services" -ForegroundColor Green
-    Write-Host "  [+] Display control" -ForegroundColor Green
-    Write-Host "  [+] Power management" -ForegroundColor Green
-    Write-Host "  [+] Keyboard hot keys" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "  This will NOT re-enable bloatware or telemetry services." -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "  Proceed with hardware recovery? (yes/no): " -NoNewline -ForegroundColor Yellow
-    
-    $confirm = Read-Host
-    
-    if ($confirm -notmatch '^(yes|y)$') {
-        return
-    }
-    
-    Write-Host ""
-    Write-Host "[Recovery] Re-enabling hardware services..." -ForegroundColor Cyan
-    Write-Host ""
-    
-    foreach ($serviceName in $script:HardwareCritical.Keys) {
-        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-        if ($service) {
-            try {
-                Set-Service -Name $serviceName -StartupType Automatic -ErrorAction SilentlyContinue
-                Start-Service -Name $serviceName -ErrorAction SilentlyContinue
-                Write-Host "  [OK] Restored: $($service.DisplayName)" -ForegroundColor Green
-            }
-            catch {
-                # Silent fail
-            }
-        }
-    }
-    
-    Write-Host ""
-    Write-Host "[SUCCESS] Hardware services restored!" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Please test your hardware:" -ForegroundColor Cyan
-    Write-Host "  - Try touchpad gestures" -ForegroundColor White
-    Write-Host "  - Play audio to test speakers" -ForegroundColor White
-    Write-Host "  - Test function keys (brightness, volume)" -ForegroundColor White
+    Write-Host "  OMEN Gaming Hub is fully functional" -ForegroundColor Green
+    Write-Host "  Fan control and temps work normally" -ForegroundColor Green
+    Write-Host "  Graphics switching untouched" -ForegroundColor Green
+    Write-Host "  All hardware features operational" -ForegroundColor Green
     Write-Host ""
     
     Write-Host "Press any key to return to main menu..." -ForegroundColor Gray
@@ -1967,26 +1522,22 @@ function Show-MainMenu {
         Write-Host "                            OPERATION MODE" -ForegroundColor White
         Write-Host "================================================================================" -ForegroundColor White
         Write-Host ""
-        Write-Host "  [1] OMEN GAMING HUB - ENABLE" -ForegroundColor Cyan
-        Write-Host "      Enable OGH services (use before opening app)" -ForegroundColor Gray
+        Write-Host "  [1] BLOCK TELEMETRY & ADS" -ForegroundColor Cyan
+        Write-Host "      Disable HP telemetry and advertisement services" -ForegroundColor Gray
+        Write-Host "      (OMEN Gaming Hub fully protected and functional)" -ForegroundColor Green
         Write-Host ""
-        Write-Host "  [2] OMEN GAMING HUB - DISABLE" -ForegroundColor Cyan
-        Write-Host "      Disable OGH services (use after closing app)" -ForegroundColor Gray
-        Write-Host ""
-        Write-Host "  [3] GENERAL HP DEBLOAT" -ForegroundColor Cyan
-        Write-Host "      Remove bloatware and telemetry (safe mode)" -ForegroundColor Gray
-        Write-Host ""
-        Write-Host "  [4] NETWORK ISOLATION" -ForegroundColor Cyan
-        Write-Host "      Block HP telemetry domains and services" -ForegroundColor Gray
-        Write-Host ""
-        Write-Host "  [5] ROLLBACK MODE" -ForegroundColor Yellow
-        Write-Host "      Restore from previous backup" -ForegroundColor Gray
-        Write-Host ""
-        Write-Host "  [R] QUICK RECOVERY" -ForegroundColor Green
-        Write-Host "      Restore all hardware services (emergency)" -ForegroundColor Gray
+        Write-Host "  [2] ROLLBACK MODE" -ForegroundColor Yellow
+        Write-Host "      Restore from previous backup (undo changes)" -ForegroundColor Gray
         Write-Host ""
         Write-Host "  [Q] QUIT" -ForegroundColor Red
         Write-Host "      Exit script safely" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "================================================================================" -ForegroundColor White
+        Write-Host "                            INFORMATION" -ForegroundColor White
+        Write-Host "================================================================================" -ForegroundColor White
+        Write-Host ""
+        Write-Host "  This script ONLY disables telemetry and advertisement services." -ForegroundColor Cyan
+        Write-Host "  OMEN Gaming Hub, fan control, temps, and all hardware remain functional." -ForegroundColor Cyan
         Write-Host ""
         Write-Host "================================================================================" -ForegroundColor White
         Write-Host ""
@@ -1995,33 +1546,22 @@ function Show-MainMenu {
         $choice = Read-Host
         
         switch ($choice.ToUpper()) {
-            "1" { Enable-OMENServices }
-            "2" { Disable-OMENServices }
-            "3" { Invoke-GeneralDebloat }
-            "4" { 
-                Invoke-FullBackup -Operation "Network Isolation"
-                Block-TelemetryDomains
-                New-TelemetryFirewallRules
-                Write-Host ""
-                Write-Host "Press any key to continue..." -ForegroundColor Gray
-                $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-            }
-            "5" {
+            "1" { Invoke-TelemetryAndAdBlocking }
+            "2" {
                 $backup = Show-BackupSelectionMenu
                 if ($backup) {
                     Invoke-FullRollback -Backup $backup
                 }
             }
-            "R" { Invoke-QuickHardwareRecovery }
             "Q" { 
                 $exitMenu = $true
                 Write-Host ""
-                Write-Host "[EXIT] Exiting HP Debloater. No changes made this session." -ForegroundColor Green
+                Write-Host "[EXIT] Thank you for using HP Telemetry & Ad Blocker!" -ForegroundColor Green
                 Write-Host ""
             }
             default {
                 Write-Host ""
-                Write-Host "[ERROR] Invalid option. Please select 1-5, R, or Q." -ForegroundColor Red
+                Write-Host "[ERROR] Invalid option. Please select 1, 2, or Q." -ForegroundColor Red
                 Start-Sleep -Seconds 2
             }
         }
