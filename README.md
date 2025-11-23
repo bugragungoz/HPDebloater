@@ -183,20 +183,6 @@ Risks:
 - **PowerShell**: 5.1 or higher
 - **Disk Space**: ~10MB for backups
 
-## Version History
-
-Previous version (1.0.0) issues:
-- Broke OMEN Gaming Hub features
-- Disabled graphics switching controls
-- Affected fan control and temperature monitoring
-- Impacted performance management
-
-Current version (2.0.0) improvements:
-- Only targets telemetry and ads
-- Leaves all gaming features intact
-- Keeps hardware controls functional
-- Simpler and safer to use
-
 ## Legal Disclaimer
 
 ```
@@ -210,32 +196,12 @@ You have the right to disable telemetry on your own device.
 Automatic backups allow easy restoration if needed.
 ```
 
-## Contributing
-
-Contributions welcome:
-- Test on different HP OMEN models
-- Report telemetry services we missed
-- Suggest improvements for OMEN safety
-- Share your results
-
 ## Credits
 
 - **Author**: Bugra
 - **Concept & Design**: Bugra
 - **Development**: Claude 4.5 Sonnet AI
-- **Version**: 2.0.0 (OMEN-Safe Edition)
 
 ## License
 
 MIT License - Use at your own risk
-
-## Support
-
-Use GitHub Issues for bug reports and suggestions.
-
-Reports from OMEN users confirming Gaming Hub functionality are appreciated.
-
----
-
-**Note**: This script only blocks telemetry and ads. OMEN Gaming Hub, fan control, temperature monitoring, and graphics switching remain fully functional.
-
